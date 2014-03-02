@@ -97,4 +97,42 @@ sub test_attribute_inc {
     return;
 }
 
+sub test_prove_args {
+    my $test = shift;
+
+    my $object = $CLASS->new;
+
+    can_ok( $object, '_prove_args' );
+
+    ok( $object->_prove_args, 'Prove args defined' );
+
+    isa_ok( $object->_prove_args, 'ARRAY' );
+
+    my @default_prove_args = ( $object->test_path );
+
+    is_deeply( $object->_prove_args, \@default_prove_args,
+        'Correct default prove_args' );
+
+    my @single_inc = ('lib');
+
+    my $object_with_inc = $CLASS->new( { inc => \@single_inc } );
+
+    my @single_inc_prove_args = ( '-I', @single_inc, $object->test_path );
+
+    is_deeply( $object_with_inc->_prove_args,
+        \@single_inc_prove_args, 'Correct prove_args for single inc' );
+
+    my @double_inc = ('lib');
+
+    my $object_with_double_inc = $CLASS->new( { inc => \@double_inc } );
+
+    my @double_inc_prove_args =
+      ( ( map { ( '-I', $_ ) } @double_inc ), $object->test_path );
+
+    is_deeply( $object_with_double_inc->_prove_args,
+        \@double_inc_prove_args, 'Correct prove_args for double inc' );
+
+    return;
+}
+
 1;

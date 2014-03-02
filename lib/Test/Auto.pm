@@ -24,6 +24,26 @@ has _inc => (
     },
 );
 
+has _prove_args => (
+    is      => 'ro',
+    lazy    => 1,
+    builder => '_build__prove_args',
+);
+
+sub _build__prove_args {
+    my ($self) = @_;
+
+    my @prove_args;
+
+    if ( $self->_has_inc ) {
+        push @prove_args, map { ( '-I', $_ ) } @{ $self->_inc };
+    }
+
+    push @prove_args, $self->test_path;
+
+    return \@prove_args;
+}
+
 sub run {
 }
 
